@@ -11,21 +11,25 @@
       <!-- The data-shaka-player tag will make the UI library use this video element.
             If no video is provided, the UI will automatically make one inside the container div. -->
       <video
-        autoplay
         muted
+        autoplay
         playsinline
         data-shaka-player
         id="video"
         style="width: 100%; height: 100%"
       ></video>
     </div>
+
+    <div>{{ errors }}</div>
   </div>
 </template>
 
 <script lang="ts" setup>
 // @ts-nocheck
+
+const errors = ref('');
 const manifestUri =
-  'https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd';
+  'https://vod02-cdn.fptplay.net/POVOD/encoded/2023/11/21/medicalexaminerdrqinthemindreader-trailer-f-1700577322/master.m3u8';
 
 async function init() {
   // When using the UI, the player is made automatically by the UI object.
@@ -62,6 +66,7 @@ function onPlayerErrorEvent(errorEvent) {
 function onPlayerError(error) {
   // Handle player error
   console.error('Error code', error.code, 'object', error);
+  errors.value = error;
 }
 
 function onUIErrorEvent(errorEvent) {
@@ -76,10 +81,16 @@ function initFailed(errorEvent) {
 }
 
 // Listen to the custom shaka-ui-loaded event, to wait until the UI is loaded.
-onBeforeMount(() => {
-  document.addEventListener('shaka-ui-loaded', init);
-  // Listen to the custom shaka-ui-load-failed event, in case Shaka Player fails
-  // to load (e.g. due to lack of browser support).
-  document.addEventListener('shaka-ui-load-failed', initFailed);
+// onBeforeMount(() => {
+//   document.addEventListener('shaka-ui-loaded', init);
+//   // Listen to the custom shaka-ui-load-failed event, in case Shaka Player fails
+//   // to load (e.g. due to lack of browser support).
+//   document.addEventListener('shaka-ui-load-failed', initFailed);
+// });
+
+onMounted(() => {
+  setTimeout(() => {
+    init();
+  }, 5000);
 });
 </script>
